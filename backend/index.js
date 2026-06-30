@@ -16,6 +16,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// ✅ Test route for Vercel health check
+app.get("/api", (req, res) => {
+  res.json({ message: "Backend running" });
+});
+
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/jobs", jobRoutes);
@@ -23,13 +28,13 @@ app.use("/api/candidates", candidateRoutes);
 app.use("/api/job-candidates", jobCandidateRoutes);
 app.use("/api/admin", adminRoutes);
 
-// Test route
+// ✅ Fallback route (optional)
 app.get("/", (req, res) => {
-  res.json({ message: "Backend running" });
+  res.json({ message: "Root route active" });
 });
 
+// ✅ Port configuration for Vercel
 const PORT = process.env.PORT || 4000;
-
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
