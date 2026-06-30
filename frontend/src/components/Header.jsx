@@ -1,0 +1,45 @@
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+
+const Header = () => {
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+  const user = token ? JSON.parse(localStorage.getItem("user")) : null;
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/");
+  };
+
+  return (
+    <header className="header">
+      <div className="header-left">
+        <Link to="/" className="logo">
+          <span className="logo-dot">Job</span>App
+        </Link>
+        <Link to="/" className="nav-link">Alla Annonser</Link>
+        <Link to="/jobs" className="nav-link">Dina Annonser</Link>
+      </div>
+      <div className="header-right">
+        {user ? (
+          <>
+            <span className="user-label">
+              ({user.customer_id}) {user.role} 
+            </span>
+            <button onClick={handleLogout} className="btn-outline">
+              Logga ut
+            </button>
+          </>
+        ) : (
+          <>
+            <Link to="/login" className="btn-outline">Logga in</Link>
+            <Link to="/register" className="btn-primary">Skapa konto</Link>
+          </>
+        )}
+      </div>
+    </header>
+  );
+};
+
+export default Header;

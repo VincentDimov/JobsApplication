@@ -1,240 +1,263 @@
-
+@import url("https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&display=swap");
+/* Typografi – använd Work Sans som proxy för Indeed Sans */
 
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
-
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
-
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
-}
-
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
+  /* Indeed brand‑liknande färger */
+  --indeed-blue: #003A9B;
+  --indeed-blue-ink: #001C40;
+  --indeed-blue-80: #2557A7;
+  --indeed-blue-a11y: #6792F0;
+  --gray-20: #F3F2F1;
+  --gray-40: #D4D2D0;
+  --gray-80: #595959;
+  --gray-100: #2D2D2D;
+  --white: #FFFFFF;
 }
 
 body {
   margin: 0;
+  font-family: "Work Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: var(--gray-20);
+  color: var(--gray-100);
 }
 
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
+/* Layout */
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
-p {
-  margin: 0;
+main {
+  flex: 1;
 }
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
-}
-
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
-}
-
-/* ------------------------------
-   GLOBAL RESET
---------------------------------*/
-/* index.css */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap");
-
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html, body, #root {
-  height: 100%;
-  font-family: "Inter", sans-serif;
-  background: #f3f4f6;
-  color: #1f2937;
-}
-
-/* ------------------------------
-   UTILITY CLASSES
---------------------------------*/
-.card {
-  background: white;
-  border-radius: 8px;
-  padding: 1.25rem;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-}
-
-.btn {
-  background: #111827;
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  font-size: 0.875rem;
-  cursor: pointer;
-  transition: 0.15s;
-}
-
-.btn:hover {
-  background: #1f2937;
-}
-
-.input {
-  width: 100%;
-  padding: 0.5rem 0.75rem;
-  border-radius: 6px;
-  border: 1px solid #d1d5db;
-  font-size: 0.875rem;
-}
-
-.input:focus {
-  outline: none;
-  border-color: #6366f1;
-  box-shadow: 0 0 0 2px rgba(99,102,241,0.3);
-}
-
-/* ------------------------------
-   NAVBAR
---------------------------------*/
-.navbar {
-  background: #111827;
-  color: white;
-  padding: 0.75rem 1.5rem;
+/* Header */
+.header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 12px 24px;
+  background: var(--indeed-blue);
+  color: var(--white);
 }
 
-.navbar a {
-  color: #e5e7eb;
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 24px;
   text-decoration: none;
-  margin-right: 1rem;
-  font-size: 0.875rem;
+  color: var(--white);
 }
 
-.navbar a:hover {
-  color: white;
+.logo-dot {
+  background: var(--white);
+  color: var(--indeed-blue);
+  border-radius: 50%;
+  padding: 2px 6px;
+  margin-right: 2px;
 }
 
-/* ------------------------------
-   KANBAN
---------------------------------*/
-/* .kanban-grid {
+.nav-link {
+  color: var(--white);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Buttons */
+.btn-primary {
+  background: var(--indeed-blue-80);
+  color: var(--white);
+  border: none;
+  padding: 8px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--white);
+  border: 1px solid var(--white);
+  padding: 6px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+/* Hero */
+.hero {
+  padding: 32px 24px;
+  background: var(--white);
+  border-bottom: 1px solid var(--gray-40);
+}
+
+.hero h1 {
+  font-size: 32px;
+  margin: 0 0 12px;
+}
+
+.hero-form {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 1rem;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 2fr) auto;
+  gap: 12px;
+  align-items: flex-end;
+  max-width: 800px;
 }
 
-.kanban-column {
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
+.field {
+  display: flex;
+  flex-direction: column;
 }
 
-.kanban-header {
-  padding: 0.75rem;
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  border-bottom: 1px solid #e5e7eb;
-  color: #6b7280;
+.field label {
+  font-size: 13px;
+  color: var(--gray-80);
+  margin-bottom: 4px;
 }
 
-.kanban-card {
-  background: white;
-  border-radius: 6px;
-  padding: 0.75rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-  font-size: 0.75rem;
-  margin-bottom: 0.5rem;
+.field input {
+  padding: 8px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--gray-40);
+  font-size: 14px;
 }
 
-.kanban-card a {
-  color: #2563eb;
+.popular-searches {
+  margin-top: 16px;
+  font-size: 13px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.popular-searches button {
+  border: none;
+  background: var(--gray-20);
+  padding: 4px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+/* Jobblista grid */
+.jobs-page,
+.home-jobs {
+  padding: 24px;
+}
+
+.job-list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+}
+
+.job-card {
+  background: var(--white);
+  border-radius: 4px;
+  padding: 16px;
+  border: 1px solid var(--gray-40);
+}
+
+.job-card h3 {
+  margin: 0 0 4px;
+  font-size: 18px;
+}
+
+.job-card a {
+  color: var(--indeed-blue-80);
   text-decoration: none;
 }
 
-.kanban-card a:hover {
+.job-card a:hover {
   text-decoration: underline;
 }
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities; */
+.job-company {
+  font-size: 13px;
+  color: var(--gray-80);
+}
+
+.job-description {
+  margin: 8px 0;
+  font-size: 14px;
+}
+
+.job-meta {
+  font-size: 12px;
+  color: var(--gray-80);
+}
+
+/* Filterpanel + paginering */
+.filters-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+  align-items: center;
+}
+
+.filters-bar select,
+.filters-bar input {
+  padding: 6px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--gray-40);
+  font-size: 13px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.pagination button {
+  border: 1px solid var(--gray-40);
+  background: var(--white);
+  padding: 4px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.pagination button.active {
+  background: var(--indeed-blue-80);
+  color: var(--white);
+}
+
+/* Footer */
+.footer {
+  padding: 16px 24px;
+  background: var(--white);
+  border-top: 1px solid var(--gray-40);
+  text-align: center;
+  font-size: 13px;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.footer-links a {
+  color: var(--gray-80);
+  text-decoration: none;
+  font-size: 12px;
+}
+
+.footer-links a:hover {
+  text-decoration: underline;
+}
