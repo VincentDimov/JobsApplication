@@ -20,12 +20,26 @@ const Header = () => {
         </Link>
         <Link to="/" className="nav-link">Alla Annonser</Link>
         <Link to="/jobs" className="nav-link">Dina Annonser</Link>
+
+        {/* ADMIN-KNAPPAR VISAS DIREKT */}
+        {user?.role === "admin" && (
+          <>
+            <Link to="/admin/customers" className="nav-link">
+              Admin Customers
+            </Link>
+
+            <Link to="/jobs" className="nav-link">
+              Admin Jobbannonser
+            </Link>
+          </>
+        )}
+        
       </div>
       <div className="header-right">
         {user ? (
           <>
             <span className="user-label">
-              ({user.customer_id}) {user.role} 
+              {user.role} 
             </span>
             <button onClick={handleLogout} className="btn-outline">
               Logga ut
@@ -34,7 +48,6 @@ const Header = () => {
         ) : (
           <>
             <Link to="/login" className="btn-outline">Logga in</Link>
-            <Link to="/register" className="btn-primary">Skapa konto</Link>
           </>
         )}
       </div>

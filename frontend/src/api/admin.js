@@ -1,6 +1,7 @@
 import api from "./client";
 
 export const getCustomers = () => api.get("/admin/customers");
+export const getAllUsers = () => api.get("/admin/all-users");
 export const getUsersByCustomer = (customerId) =>
   api.get(`/admin/users/${customerId}`);
 export const createCustomerAndUser = (payload) =>

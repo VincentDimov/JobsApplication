@@ -8,7 +8,8 @@ const JobCard = ({ job }) => {
         <h3>
           <Link to={`/jobs/${job.id}`}>{job.title}</Link>
         </h3>
-        <p className="job-company">Kund #{job.customer_id}</p>
+        <p className="job-company">{job.customer_id}</p>
+        <p className="job-location">{job.customerName}</p>
       </header>
       {job.description && (
         <p className="job-description">

@@ -4,7 +4,7 @@ import axios from "axios";
 const baseURL =
   import.meta.env.MODE === "development"
     ? "http://localhost:4000/api"
-    : "https://jobs-application-lime.vercel.app/api";
+    : "https://jobs-application-delta.vercel.app/api";
 
 const axiosClient = axios.create({
   baseURL,
