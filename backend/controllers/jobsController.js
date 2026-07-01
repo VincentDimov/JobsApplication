@@ -55,7 +55,7 @@ export const getJobById = async (req, res) => {
 export const createJob = async (req, res) => {
   try {
     const { title, description } = req.body;
-    const { customer_id } = req.user;
+    const { role, customer_id } = req.user;
 
     if (!title) {
       return res.status(400).json({ error: "Title is required" });

@@ -4,18 +4,36 @@ import { supabase } from "../lib/supabaseAdmin.js";
 
 // REGISTER
 export const register = async (req, res) => {
-  const { email, password, role, customer_id } = req.body;
+  const { email, password, role, customer_name } = req.body;
 
   if (!email || !password) {
     return res.status(400).json({ error: "Email and password required" });
   }
 
+  // 1. Skapa kund automatiskt
+  const { data: customer, error: customerError } = await supabase
+    .from("customers")
+    .insert([{ name: customer_name }])
+    .select()
+    .single();
+
+  if (customerError) return res.status(400).json({ error: customerError });
+
+  // 2. Hasha lösenord
   const salt = await bcrypt.genSalt(10);
   const hashed = await bcrypt.hash(password, salt);
 
+  // 3. Skapa user kopplad till kund
   const { data, error } = await supabase
     .from("profiles")
-    .insert([{ email, password: hashed, role, customer_id }])
+    .insert([
+      {
+        email,
+        password: hashed,
+        role,
+        customer_id: customer.id
+      }
+    ])
     .select()
     .single();
 

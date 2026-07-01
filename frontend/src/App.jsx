@@ -10,6 +10,7 @@ import RegisterPage from "./pages/RegisterPage";
 import DashboardPage from "./pages/DashboardPage";
 import AdminCustomersPage from "./pages/AdminCustomersPage";
 import AdminUsersPage from "./pages/AdminUsersPage";
+import CreateJobPage from "./pages/CreateJobPage";
 
 const App = () => {
   return (
@@ -26,6 +27,7 @@ const App = () => {
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/admin/customers" element={<AdminCustomersPage />} />
             <Route path="/admin/customers/:id/users" element={<AdminUsersPage />} />
+            <Route path="/customer/create-job" element={<CreateJobPage />} />
           </Routes>
         </main>
         <Footer />

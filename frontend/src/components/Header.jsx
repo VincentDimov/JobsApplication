@@ -20,6 +20,7 @@ const Header = () => {
         </Link>
         <Link to="/" className="nav-link">Alla Annonser</Link>
         <Link to="/jobs" className="nav-link">Dina Annonser</Link>
+        <Link to="/dashboard" className="nav-link">Dashboard</Link>
 
         {/* ADMIN-KNAPPAR VISAS DIREKT */}
         {user?.role === "admin" && (
