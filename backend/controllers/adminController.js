@@ -1,14 +1,14 @@
 import { supabase } from "../lib/supabaseAdmin.js";
 import bcrypt from "bcrypt";
 
-// POST /api/admin/create-customer-and-user
+/* -------------------------------------------------------
+   POST /api/admin/create-customer-and-user
+   Skapar en "customer" (egentligen bara ett namn) + user i profiles
+-------------------------------------------------------- */
 export const createCustomerAndUser = async (req, res) => {
   try {
     const { role } = req.user;
-
-    if (role !== "admin") {
-      return res.status(403).json({ error: "Not allowed" });
-    }
+    if (role !== "admin") return res.status(403).json({ error: "Not allowed" });
 
     const { customer_name, user_email, user_password, user_role } = req.body;
 
@@ -16,19 +16,10 @@ export const createCustomerAndUser = async (req, res) => {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
-    // 1. Skapa kund
-    const { data: customer, error: customerError } = await supabase
-      .from("customers")
-      .insert([{ name: customer_name }])
-      .select()
-      .single();
-
-    if (customerError) return res.status(400).json({ error: customerError });
-
-    // 2. Hasha lösenord
+    // Hasha lösenord
     const hashedPassword = await bcrypt.hash(user_password, 10);
 
-    // 3. Skapa användare i profiles kopplad till kunden
+    // Skapa user i profiles
     const { data: user, error: userError } = await supabase
       .from("profiles")
       .insert([
@@ -37,7 +28,7 @@ export const createCustomerAndUser = async (req, res) => {
           password: hashedPassword,
           role: user_role,
           costumerName: customer_name,
-          customer_id: customer.id
+          customer_id: customer_name // <-- customer_name används som ID
         }
       ])
       .select()
@@ -47,35 +38,41 @@ export const createCustomerAndUser = async (req, res) => {
 
     res.json({
       message: "Customer and user created",
-      customer,
       user
     });
+
   } catch (err) {
     res.status(500).json({ error: "Server error" });
   }
 };
 
-
-// GET /api/admin/customers
+/* -------------------------------------------------------
+   GET /api/admin/customers
+   Hämtar alla users och grupperar dem efter customer_id
+-------------------------------------------------------- */
 export const getAllCustomers = async (req, res) => {
   try {
     const { role } = req.user;
+    if (role !== "admin") return res.status(403).json({ error: "Not allowed" });
 
-    // Endast admin får se alla kunder
-    if (role !== "admin") {
-      return res.status(403).json({ error: "Not allowed" });
-    }
-
-    const { data, error } = await supabase
-      .from("customers")
-      .select("*")
+    const { data: users, error } = await supabase
+      .from("profiles")
+      .select("id, email, role, customer_id, costumerName, created_at")
       .order("created_at", { ascending: false });
 
     if (error) return res.status(400).json({ error });
 
+    // Gruppera users efter customer_id
+    const grouped = {};
+    users.forEach((u) => {
+      const cid = u.customer_id || "none";
+      if (!grouped[cid]) grouped[cid] = [];
+      grouped[cid].push(u);
+    });
+
     res.json({
-      count: data.length,
-      customers: data
+      count: users.length,
+      customers: grouped
     });
 
   } catch (err) {
@@ -83,24 +80,20 @@ export const getAllCustomers = async (req, res) => {
   }
 };
 
-// GET /api/admin/users/:customer_id
+/* -------------------------------------------------------
+   GET /api/admin/users/:customer_id
+   Hämtar alla users för en specifik customer_id
+-------------------------------------------------------- */
 export const getUsersByCustomer = async (req, res) => {
   try {
     const { role } = req.user;
-
-    if (role !== "admin") {
-      return res.status(403).json({ error: "Not allowed" });
-    }
+    if (role !== "admin") return res.status(403).json({ error: "Not allowed" });
 
     const { customer_id } = req.params;
 
-    if (!customer_id) {
-      return res.status(400).json({ error: "customer_id is required" });
-    }
-
     const { data, error } = await supabase
       .from("profiles")
-      .select("id, email, role, customer_id, created_at")
+      .select("id, email, role, customer_id, costumerName, created_at")
       .eq("customer_id", customer_id)
       .order("created_at", { ascending: false });
 
@@ -111,21 +104,20 @@ export const getUsersByCustomer = async (req, res) => {
       count: data.length,
       users: data
     });
+
   } catch (err) {
     res.status(500).json({ error: "Server error" });
   }
 };
 
-
-// PUT /api/admin/customers/:customer_id
+/* -------------------------------------------------------
+   PUT /api/admin/customers/:customer_id
+   Uppdaterar customer_name för alla users med samma customer_id
+-------------------------------------------------------- */
 export const updateCustomerName = async (req, res) => {
   try {
     const { role } = req.user;
-
-    // Endast admin får uppdatera kundinfo
-    if (role !== "admin") {
-      return res.status(403).json({ error: "Not allowed" });
-    }
+    if (role !== "admin") return res.status(403).json({ error: "Not allowed" });
 
     const { customer_id } = req.params;
     const { new_name } = req.body;
@@ -134,32 +126,18 @@ export const updateCustomerName = async (req, res) => {
       return res.status(400).json({ error: "new_name is required" });
     }
 
-    // Kontrollera att kunden finns
-    const { data: customer, error: customerError } = await supabase
-      .from("customers")
-      .select("*")
-      .eq("id", customer_id)
-      .single();
-
-    if (customerError || !customer) {
-      return res.status(404).json({ error: "Customer not found" });
-    }
-
-    // Uppdatera kundens namn
+    // Uppdatera alla users med samma customer_id
     const { data, error } = await supabase
-      .from("customers")
-      .update({ name: new_name })
-      .eq("id", customer_id)
-      .select()
-      .single();
+      .from("profiles")
+      .update({ costumerName: new_name, customer_id: new_name })
+      .eq("customer_id", customer_id)
+      .select();
 
-    if (error) {
-      return res.status(400).json({ error });
-    }
+    if (error) return res.status(400).json({ error });
 
     res.json({
       message: "Customer name updated",
-      customer: data
+      updated_users: data
     });
 
   } catch (err) {
@@ -167,25 +145,19 @@ export const updateCustomerName = async (req, res) => {
   }
 };
 
-
-// PUT /api/admin/users/:user_id/role
+/* -------------------------------------------------------
+   PUT /api/admin/users/:user_id/role
+   Uppdaterar en users roll
+-------------------------------------------------------- */
 export const updateUserRole = async (req, res) => {
   try {
     const { role } = req.user;
-
-    if (role !== "admin") {
-      return res.status(403).json({ error: "Not allowed" });
-    }
+    if (role !== "admin") return res.status(403).json({ error: "Not allowed" });
 
     const { user_id } = req.params;
     const { new_role } = req.body;
 
-    if (!new_role) {
-      return res.status(400).json({ error: "new_role is required" });
-    }
-
     const allowedRoles = ["admin", "customer_admin", "customer_user"];
-
     if (!allowedRoles.includes(new_role)) {
       return res.status(400).json({ error: "Invalid role" });
     }
@@ -205,27 +177,22 @@ export const updateUserRole = async (req, res) => {
       message: "User role updated",
       user: data
     });
+
   } catch (err) {
     res.status(500).json({ error: "Server error" });
   }
 };
 
-
-
-// DELETE /api/admin/users/:user_id
+/* -------------------------------------------------------
+   DELETE /api/admin/users/:user_id
+   Tar bort en user
+-------------------------------------------------------- */
 export const deleteUser = async (req, res) => {
   try {
     const { role } = req.user;
-
-    if (role !== "admin") {
-      return res.status(403).json({ error: "Not allowed" });
-    }
+    if (role !== "admin") return res.status(403).json({ error: "Not allowed" });
 
     const { user_id } = req.params;
-
-    if (!user_id) {
-      return res.status(400).json({ error: "user_id is required" });
-    }
 
     const { data: user, error: userError } = await supabase
       .from("profiles")
@@ -250,8 +217,8 @@ export const deleteUser = async (req, res) => {
       message: "User deleted",
       deleted_user_id: user_id
     });
+
   } catch (err) {
     res.status(500).json({ error: "Server error" });
   }
 };
-

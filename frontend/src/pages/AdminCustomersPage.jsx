@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { getAllUsers, createCustomerAndUser } from "../api/admin";
+import { getAllCustomers, createCustomerAndUser } from "../api/admin";
 
 const AdminCustomersPage = () => {
   const [users, setUsers] = useState([]);
-  const [grouped, setGrouped] = useState({});
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
@@ -14,21 +13,11 @@ const AdminCustomersPage = () => {
     user_role: "customer_admin",
   });
 
+  // Hämta ALLA users från profiles
   const fetchUsers = async () => {
     try {
-      const res = await getAllUsers();
+      const res = await getAllCustomers();
       setUsers(res.data.users);
-
-      // Gruppera users efter customer_id
-      const groups = {};
-      res.data.users.forEach((u) => {
-        const cid = u.customer_id || "none";
-        if (!groups[cid]) groups[cid] = [];
-        groups[cid].push(u);
-      });
-
-      setGrouped(groups);
-
     } catch (err) {
       setError("Kunde inte hämta användare. Är du inloggad som admin?");
     }
@@ -50,12 +39,14 @@ const AdminCustomersPage = () => {
     try {
       await createCustomerAndUser(form);
       setMessage("Ny kund + användare skapad!");
+
       setForm({
         customer_name: "",
         user_email: "",
         user_password: "",
         user_role: "customer_admin",
       });
+
       fetchUsers();
     } catch (err) {
       setError("Kunde inte skapa kund/användare.");
@@ -64,8 +55,9 @@ const AdminCustomersPage = () => {
 
   return (
     <section className="admin-page">
-      <h1>Admin – Customers (Profiles)</h1>
+      <h1>Admin – Alla användare</h1>
 
+      {/* FORMULÄR FÖR ATT SKAPA NY CUSTOMER + USER */}
       <form onSubmit={handleSubmit} className="admin-form">
         <input
           name="customer_name"
@@ -103,23 +95,34 @@ const AdminCustomersPage = () => {
       {message && <p className="success">{message}</p>}
       {error && <p className="error">{error}</p>}
 
-      <h2>Alla customers (grupperat från profiles)</h2>
+      <h2>Alla användare</h2>
 
-      <ul className="customer-list">
-        {Object.keys(grouped).map((cid) => (
-          <li key={cid}>
-            <strong>Kund ID: {cid}</strong>
+      {/* SNYGG TABELL */}
+      <table className="admin-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>E‑post</th>
+            <th>Roll</th>
+            <th>Kundnamn</th>
+            <th>Customer ID</th>
+            <th>Skapad</th>
+          </tr>
+        </thead>
 
-            <ul>
-              {grouped[cid].map((u) => (
-                <li key={u.id}>
-                  {u.email} – {u.role}
-                </li>
-              ))}
-            </ul>
-          </li>
-        ))}
-      </ul>
+        <tbody>
+          {users.map((u) => (
+            <tr key={u.id}>
+              <td>{u.id}</td>
+              <td>{u.email}</td>
+              <td>{u.role}</td>
+              <td>{u.costumerName || "—"}</td>
+              <td>{u.customer_id || "—"}</td>
+              <td>{new Date(u.created_at).toLocaleString()}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </section>
   );
 };
