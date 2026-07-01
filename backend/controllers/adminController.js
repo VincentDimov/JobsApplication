@@ -55,30 +55,6 @@ export const createCustomerAndUser = async (req, res) => {
   }
 };
 
-// GET /api/admin/all-users
-export const getAllUsers = async (req, res) => {
-  try {
-    const { role } = req.user;
-
-    if (role !== "admin") {
-      return res.status(403).json({ error: "Not allowed" });
-    }
-
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("id, email, role, customer_id, created_at")
-      .order("created_at", { ascending: false });
-
-    if (error) return res.status(400).json({ error });
-
-    res.json({
-      count: data.length,
-      users: data
-    });
-  } catch (err) {
-    res.status(500).json({ error: "Server error" });
-  }
-};
 
 // GET /api/admin/customers
 export const getAllCustomers = async (req, res) => {
