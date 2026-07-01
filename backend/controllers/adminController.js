@@ -27,7 +27,7 @@ export const createCustomerAndUser = async (req, res) => {
           email: user_email,
           password: hashedPassword,
           role: user_role,
-          costumerName: customer_name,
+          customer_name: customer_name,
           customer_id: customer_name // <-- customer_name används som ID
         }
       ])
@@ -61,7 +61,7 @@ export const getAllCustomers = async (req, res) => {
     // Hämta ALLA users från profiles
     const { data, error } = await supabase
       .from("profiles")
-      .select("id, email, role, customer_id, costumerName, created_at")
+      .select("id, email, role, customer_id, customer_name, created_at")
       .order("created_at", { ascending: false });
 
     if (error) return res.status(400).json({ error });
@@ -90,7 +90,7 @@ export const getUsersByCustomer = async (req, res) => {
 
     const { data, error } = await supabase
       .from("profiles")
-      .select("id, email, role, customer_id, costumerName, created_at")
+      .select("id, email, role, customer_id, customer_name, created_at")
       .eq("customer_id", customer_id)
       .order("created_at", { ascending: false });
 
@@ -126,7 +126,7 @@ export const updateCustomerName = async (req, res) => {
     // Uppdatera alla users med samma customer_id
     const { data, error } = await supabase
       .from("profiles")
-      .update({ costumerName: new_name, customer_id: new_name })
+      .update({ customer_name: new_name, customer_id: new_name })
       .eq("customer_id", customer_id)
       .select();
 

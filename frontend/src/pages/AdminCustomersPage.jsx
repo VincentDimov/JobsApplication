@@ -112,7 +112,7 @@ const AdminCustomersPage = () => {
               <td>{u.id}</td>
               <td>{u.email}</td>
               <td>{u.role}</td>
-              <td>{u.costumerName || "—"}</td>
+              <td>{u.customer_name || "—"}</td>
               <td>{u.customer_id || "—"}</td>
               <td>{new Date(u.created_at).toLocaleString()}</td>
             </tr>
