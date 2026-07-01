@@ -1,0 +1,16 @@
+{
+      "backend": {
+      "root": "backend",
+      "entrypoint": "index.js"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": {
+        "type": "service",
+        "service": "backend"
+      }
+    }
+  ]
+}
