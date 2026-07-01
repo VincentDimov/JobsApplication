@@ -48,37 +48,34 @@ export const createCustomerAndUser = async (req, res) => {
 
 /* -------------------------------------------------------
    GET /api/admin/customers
-   Hämtar alla users och grupperar dem efter customer_id
+   Hämtar ALLA users från profiles (ingen grouping)
 -------------------------------------------------------- */
 export const getAllCustomers = async (req, res) => {
   try {
     const { role } = req.user;
-    if (role !== "admin") return res.status(403).json({ error: "Not allowed" });
 
-    const { data: users, error } = await supabase
+    if (role !== "admin") {
+      return res.status(403).json({ error: "Not allowed" });
+    }
+
+    // Hämta ALLA users från profiles
+    const { data, error } = await supabase
       .from("profiles")
       .select("id, email, role, customer_id, costumerName, created_at")
       .order("created_at", { ascending: false });
 
     if (error) return res.status(400).json({ error });
 
-    // Gruppera users efter customer_id
-    const grouped = {};
-    users.forEach((u) => {
-      const cid = u.customer_id || "none";
-      if (!grouped[cid]) grouped[cid] = [];
-      grouped[cid].push(u);
-    });
-
     res.json({
-      count: users.length,
-      customers: grouped
+      count: data.length,
+      users: data
     });
 
   } catch (err) {
     res.status(500).json({ error: "Server error" });
   }
 };
+
 
 /* -------------------------------------------------------
    GET /api/admin/users/:customer_id

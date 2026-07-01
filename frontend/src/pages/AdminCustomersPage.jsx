@@ -13,12 +13,12 @@ const AdminCustomersPage = () => {
     user_role: "customer_admin",
   });
 
-  // Hämta ALLA users från profiles
   const fetchUsers = async () => {
     try {
       const res = await getAllCustomers();
       setUsers(res.data.users);
     } catch (err) {
+      console.log(err);
       setError("Kunde inte hämta användare. Är du inloggad som admin?");
     }
   };
@@ -39,14 +39,12 @@ const AdminCustomersPage = () => {
     try {
       await createCustomerAndUser(form);
       setMessage("Ny kund + användare skapad!");
-
       setForm({
         customer_name: "",
         user_email: "",
         user_password: "",
         user_role: "customer_admin",
       });
-
       fetchUsers();
     } catch (err) {
       setError("Kunde inte skapa kund/användare.");
@@ -57,7 +55,6 @@ const AdminCustomersPage = () => {
     <section className="admin-page">
       <h1>Admin – Alla användare</h1>
 
-      {/* FORMULÄR FÖR ATT SKAPA NY CUSTOMER + USER */}
       <form onSubmit={handleSubmit} className="admin-form">
         <input
           name="customer_name"
@@ -97,7 +94,6 @@ const AdminCustomersPage = () => {
 
       <h2>Alla användare</h2>
 
-      {/* SNYGG TABELL */}
       <table className="admin-table">
         <thead>
           <tr>
