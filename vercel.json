@@ -2,8 +2,7 @@
       "backend": {
       "root": "backend",
       "entrypoint": "index.js"
-    }
-  },
+    },
   "rewrites": [
     {
       "source": "/api/(.*)",
